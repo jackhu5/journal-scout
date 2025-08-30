@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>批量期刊爬取</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; background-color: #f4f4f4; color: #333; }
+        .container { max-width: 800px; margin: 0 auto; background-color: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        h1 { text-align: center; color: #0056b3; }
+        .home-link { display: inline-block; margin-bottom: 20px; padding: 8px 15px; background-color: #6c757d; color: white; text-decoration: none; border-radius: 5px; }
+        .home-link:hover { background-color: #5a6268; }
+        .params-container { border: 1px solid #ddd; padding: 20px; border-radius: 8px; margin-bottom: 20px; }
+        .param-group { display: flex; align-items: center; gap: 10px; margin-bottom: 15px; flex-wrap: wrap; }
+        .param-group label { font-weight: bold; min-width: 100px; }
+        .param-group input[type="number"], .param-group select { padding: 8px; border: 1px solid #ccc; border-radius: 4px; font-size: 14px; width: 120px; }
+        .param-group span { color: #555; }
+        .action-btn { padding: 10px 20px; background-color: #007bff; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 16px; }
+        .action-btn:hover { background-color: #0056b3; }
+        .action-btn:disabled { background-color: #ccc; }
+        .progress-container { border: 1px solid #ddd; padding: 20px; border-radius: 8px; display: none; }
+        .progress-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
+        .stop-btn { padding: 8px 15px; background-color: #dc3545; color: white; border: none; border-radius: 4px; cursor: pointer; }
+        .stop-btn:hover { background-color: #c82333; }
+        .progress-bar-container { width: 100%; background-color: #e9ecef; border-radius: 4px; margin-bottom: 10px; }
+        .progress-fill { height: 20px; width: 0%; background-color: #28a745; border-radius: 4px; text-align: center; color: white; line-height: 20px; transition: width 0.3s ease; }
+        .progress-stats { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-bottom: 10px; }
+        .stat-item { background-color: #f8f9fa; padding: 10px; border-radius: 4px; }
+        .current-url { margin-top: 10px; word-break: break-all; }
+        #errorLog { margin-top: 15px; max-height: 200px; overflow-y: auto; background: #fff3cd; padding: 10px; border-radius: 4px; border: 1px solid #ffeeba; }
+        #errorLog h4 { margin-top: 0; }
+        #errorLog p { margin: 5px 0; font-size: 14px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div style="text-align: right; margin-bottom: 10px;">
+            <a href="/" class="home-link">返回主页</a>
+        </div>
+        <h1>批量期刊爬取工具</h1>
+
+        <div class="params-container">
+            <div class="param-group">
+                <label>选择期刊:</label>
+                <select id="journalSelect"></select>
+            </div>
+            <div class="param-group">
+                <label>Volume 范围:</label>
+                <input type="number" id="volumeStart" placeholder="起始" min="0">
+                <span>-</span>
+                <input type="number" id="volumeEnd" placeholder="结束" min="0">
+            </div>
+            <div class="param-group">
+                <label>Issue 范围:</label>
+                <input type="number" id="issueStart" placeholder="起始" min="0">
+                <span>-</span>
+                <input type="number" id="issueEnd" placeholder="结束" min="0">
+            </div>
+            <p id="paramError" style="color: red;"></p>
+            <p>预计爬取URL数量: <span id="urlCount">0</span></p>
+            <button id="startBatchBtn" class="action-btn">开始批量爬取</button>
+        </div>
+
+        <div id="progressContainer" class="progress-container">
+            <div class="progress-header">
+                <h3>批量爬取进度</h3>
+                <button id="stopBatchBtn" class="stop-btn">停止</button>
+            </div>
+            <div class="progress-bar-container">
+                <div id="progressFill" class="progress-fill">0%</div>
+            </div>
+            <div class="progress-stats">
+                <div class="stat-item">总计: <span id="totalCount">0</span></div>
+                <div class="stat-item">已处理: <span id="processedCount">0</span></div>
+                <div class="stat-item">成功: <span id="successCount">0</span></div>
+                <div class="stat-item">失败: <span id="failedCount">0</span></div>
+            </div>
+            <div class="current-url">
+                <strong>当前:</strong> <span id="currentUrl">-</span>
+            </div>
+            <div id="errorLog" style="display: none;">
+                <h4>错误日志:</h4>
+                <div id="errorMessages"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const journalSelect = document.getElementById('journalSelect');
+            const volumeStart = document.getElementById('volumeStart');
+            const volumeEnd = document.getElementById('volumeEnd');
+            const issueStart = document.getElementById('issueStart');
+            const issueEnd = document.getElementById('issueEnd');
+            const paramError = document.getElementById('paramError');
+            const urlCount = document.getElementById('urlCount');
+            const startBatchBtn = document.getElementById('startBatchBtn');
+            const progressContainer = document.getElementById('progressContainer');
+            const stopBatchBtn = document.getElementById('stopBatchBtn');
+            const progressFill = document.getElementById('progressFill');
+            const totalCount = document.getElementById('totalCount');
+            const processedCount = document.getElementById('processedCount');
+            const successCount = document.getElementById('successCount');
+            const failedCount = document.getElementById('failedCount');
+            const currentUrl = document.getElementById('currentUrl');
+            const errorLog = document.getElementById('errorLog');
+            const errorMessages = document.getElementById('errorMessages');
+
+            let eventSource;
+            let currentTaskId;
+
+            async function loadJournals() {
+                try {
+                    const response = await fetch('/journal_configs');
+                    const configs = await response.json();
+                    for (const code in configs) {
+                        const option = document.createElement('option');
+                        option.value = code;
+                        option.textContent = configs[code].name;
+                        journalSelect.appendChild(option);
+                    }
+                } catch (error) {
+                    console.error('Error loading journals:', error);
+                    paramError.textContent = '无法加载期刊列表。';
+                }
+            }
+
+            function updateUrlCount() {
+                paramError.textContent = '';
+                const volStart = parseInt(volumeStart.value);
+                const volEnd = parseInt(volumeEnd.value);
+                const issStart = parseInt(issueStart.value);
+                const issEnd = parseInt(issueEnd.value);
+
+                if (isNaN(volStart) || isNaN(volEnd) || isNaN(issStart) || isNaN(issEnd) || volStart < 0 || volEnd < 0 || issStart < 0 || issEnd < 0) {
+                    urlCount.textContent = '0';
+                    return;
+                }
+                
+                if (volStart > volEnd) {
+                    paramError.textContent = 'Volume起始值不能大于结束值。';
+                    urlCount.textContent = '0';
+                    return;
+                }
+
+                if (issStart > issEnd) {
+                    paramError.textContent = 'Issue起始值不能大于结束值。';
+                    urlCount.textContent = '0';
+                    return;
+                }
+
+                const count = (volEnd - volStart + 1) * (issEnd - issStart + 1);
+                urlCount.textContent = count;
+            }
+
+            [volumeStart, volumeEnd, issueStart, issueEnd].forEach(input => {
+                input.addEventListener('input', updateUrlCount);
+            });
+            
+            function validateParams() {
+                updateUrlCount();
+                return paramError.textContent === '';
+            }
+
+            startBatchBtn.addEventListener('click', async () => {
+                if (!validateParams() || urlCount.textContent === '0') {
+                    paramError.textContent = paramError.textContent || '请输入有效的范围。';
+                    return;
+                }
+
+                const params = {
+                    journal_code: journalSelect.value,
+                    volume_start: volumeStart.value,
+                    volume_end: volumeEnd.value,
+                    issue_start: issueStart.value,
+                    issue_end: issueEnd.value,
+                };
+                
+                startBatchBtn.disabled = true;
+                progressContainer.style.display = 'block';
+                errorLog.style.display = 'none';
+                errorMessages.innerHTML = '';
+                
+                try {
+                    const response = await fetch('/batch_crawl', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(params)
+                    });
+
+                    const result = await response.json();
+
+                    if (response.ok && result.status === 'success') {
+                        currentTaskId = result.task_id;
+                        totalCount.textContent = result.total_urls;
+                        startProgressUpdates(currentTaskId);
+                    } else {
+                        paramError.textContent = `启动失败: ${result.message}`;
+                        startBatchBtn.disabled = false;
+                    }
+                } catch (error) {
+                    paramError.textContent = `请求错误: ${error.message}`;
+                    startBatchBtn.disabled = false;
+                }
+            });
+
+            function startProgressUpdates(taskId) {
+                eventSource = new EventSource(`/batch_progress/${taskId}`);
+                
+                eventSource.onmessage = (event) => {
+                    const progress = JSON.parse(event.data);
+                    updateProgressUI(progress);
+                };
+
+                eventSource.onerror = () => {
+                    paramError.textContent = '与服务器的连接丢失，停止更新。';
+                    eventSource.close();
+                    startBatchBtn.disabled = false;
+                };
+            }
+
+            function updateProgressUI(progress) {
+                const percentage = progress.progress_percentage || 0;
+                progressFill.style.width = `${percentage}%`;
+                progressFill.textContent = `${percentage}%`;
+
+                processedCount.textContent = progress.processed;
+                successCount.textContent = progress.successful;
+                failedCount.textContent = progress.failed;
+                currentUrl.textContent = progress.current_url;
+
+                if (progress.errors && progress.errors.length > 0) {
+                    errorLog.style.display = 'block';
+                    errorMessages.innerHTML = ''; // Clear previous errors
+                    progress.errors.forEach(err => {
+                        const p = document.createElement('p');
+                        p.textContent = `URL: ${err.url} - 错误: ${err.error}`;
+                        errorMessages.appendChild(p);
+                    });
+                }
+
+                if (progress.status === 'completed' || progress.status === 'stopped' || progress.status === 'failed') {
+                    eventSource.close();
+                    startBatchBtn.disabled = false;
+                    if(progress.status === 'failed') {
+                        paramError.textContent = `任务失败: ${progress.errors[progress.errors.length-1].error}`;
+                    }
+                }
+            }
+
+            stopBatchBtn.addEventListener('click', async () => {
+                if (!currentTaskId) return;
+
+                try {
+                    await fetch(`/batch_stop/${currentTaskId}`, { method: 'POST' });
+                    if (eventSource) {
+                        eventSource.close();
+                    }
+                    startBatchBtn.disabled = false;
+                    paramError.textContent = '任务已手动停止。';
+                } catch (error) {
+                    paramError.textContent = `停止任务时出错: ${error.message}`;
+                }
+            });
+
+
+            loadJournals();
+        });
+    </script>
+</body>
+</html>

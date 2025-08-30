@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>期刊数据库检索</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f4f4f4;
+            color: #333;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            text-align: center;
+            color: #0056b3;
+        }
+        .search-form {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+        .form-group label {
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        .form-group input, .form-group select {
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+        .keyword-group {
+            display: flex;
+            gap: 10px;
+        }
+        .keyword-group input {
+            flex-grow: 1;
+        }
+        .search-actions {
+            grid-column: 1 / -1;
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+        }
+        .search-actions button {
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        .search-actions button:hover {
+            background-color: #0056b3;
+        }
+        .results-container {
+            margin-top: 20px;
+        }
+        .result-card {
+            background-color: #f8f9fa;
+            border: 1px solid #e2e6ea;
+            border-radius: 6px;
+            padding: 15px;
+            margin-bottom: 15px;
+        }
+        .result-card h3 {
+            margin-top: 0;
+        }
+        .result-card h3 a {
+            text-decoration: none;
+            color: #0056b3;
+        }
+        .result-card h3 a:hover {
+            text-decoration: underline;
+        }
+        .result-card p {
+            margin: 5px 0;
+        }
+        .result-card .abstract {
+            font-style: italic;
+            color: #555;
+        }
+        .home-link {
+            display: inline-block;
+            padding: 8px 15px;
+            background-color: #6c757d;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            font-size: 14px;
+        }
+        .home-link:hover {
+            background-color: #5a6268;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div style="text-align: right; margin-bottom: 10px;">
+            <a href="/" class="home-link">返回主页</a>
+        </div>
+        <h1>期刊数据库检索</h1>
+        <form id="searchForm" class="search-form">
+            <div class="form-group">
+                <label for="dateFrom">开始日期</label>
+                <input type="date" id="dateFrom">
+            </div>
+            <div class="form-group">
+                <label for="dateTo">结束日期</label>
+                <input type="date" id="dateTo">
+            </div>
+            <div class="form-group">
+                <label for="titleKeywords">标题关键词</label>
+                <div class="keyword-group">
+                    <input type="text" id="titleKeywords" placeholder="多个关键词用逗号分隔">
+                    <select id="titleSearchType">
+                        <option value="fuzzy">模糊</option>
+                        <option value="exact">精确</option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="authorKeywords">作者关键词</label>
+                <div class="keyword-group">
+                    <input type="text" id="authorKeywords" placeholder="多个关键词用逗号分隔">
+                    <select id="authorSearchType">
+                        <option value="fuzzy">模糊</option>
+                        <option value="exact">精确</option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="abstractKeywords">摘要关键词</label>
+                <div class="keyword-group">
+                    <input type="text" id="abstractKeywords" placeholder="多个关键词用逗号分隔">
+                    <select id="abstractSearchType">
+                        <option value="fuzzy">模糊</option>
+                        <option value="exact">精确</option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="journalSelect">期刊选择</label>
+                <select id="journalSelect" multiple>
+                    <!-- 期刊选项将由JavaScript动态填充 -->
+                </select>
+            </div>
+            <div class="search-actions">
+                <button type="submit">搜索</button>
+                <button type="reset">重置</button>
+            </div>
+        </form>
+
+        <div id="statusMessage"></div>
+        <div id="resultsContainer" class="results-container">
+            <!-- 搜索结果将在这里显示 -->
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const journalSelect = document.getElementById('journalSelect');
+            
+            // 从后端获取期刊列表并填充
+            async function loadJournals() {
+                try {
+                    const response = await fetch('/journal_configs'); // 需要创建一个API来获取配置
+                    const configs = await response.json();
+                    for (const code in configs) {
+                        const option = document.createElement('option');
+                        option.value = code;
+                        option.textContent = configs[code].name;
+                        journalSelect.appendChild(option);
+                    }
+                } catch (error) {
+                    console.error('Error loading journals:', error);
+                }
+            }
+
+            loadJournals();
+
+            const searchForm = document.getElementById('searchForm');
+            const statusMessage = document.getElementById('statusMessage');
+            const resultsContainer = document.getElementById('resultsContainer');
+
+            searchForm.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                
+                const formData = {
+                    date_from: document.getElementById('dateFrom').value,
+                    date_to: document.getElementById('dateTo').value,
+                    title_keywords: document.getElementById('titleKeywords').value.split(',').map(k => k.trim()).filter(k => k),
+                    title_search_type: document.getElementById('titleSearchType').value,
+                    author_keywords: document.getElementById('authorKeywords').value.split(',').map(k => k.trim()).filter(k => k),
+                    author_search_type: document.getElementById('authorSearchType').value,
+                    abstract_keywords: document.getElementById('abstractKeywords').value.split(',').map(k => k.trim()).filter(k => k),
+                    abstract_search_type: document.getElementById('abstractSearchType').value,
+                    journal_codes: Array.from(journalSelect.selectedOptions).map(opt => opt.value)
+                };
+
+                statusMessage.textContent = '正在搜索...';
+                
+                try {
+                    const response = await fetch('/search', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(formData)
+                    });
+                    const results = await response.json();
+                    
+                    statusMessage.textContent = `找到 ${results.length} 条结果。`;
+                    resultsContainer.innerHTML = '';
+
+                    if (results.length === 0) {
+                        return;
+                    }
+
+                    results.forEach(article => {
+                        const card = document.createElement('div');
+                        card.className = 'result-card';
+                        card.innerHTML = `
+                            <h3><a href="${article.url}" target="_blank">${article.title}</a></h3>
+                            <p><strong>作者:</strong> ${article.authors}</p>
+                            <p><strong>期刊:</strong> ${article.journal_name}</p>
+                            <p><strong>日期:</strong> ${article.date}</p>
+                            <p class="abstract">${article.abstract}</p>
+                        `;
+                        resultsContainer.appendChild(card);
+                    });
+
+                } catch (error) {
+                    statusMessage.textContent = '搜索时发生错误。';
+                    console.error('Search error:', error);
+                }
+            });
+        });
+    </script>
+</body>
+</html>

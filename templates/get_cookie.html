@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cookie 获取工具</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; background-color: #f4f4f4; color: #333; }
+        .container { max-width: 700px; margin: 0 auto; background-color: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        h1 { text-align: center; color: #0056b3; }
+        .home-link { display: inline-block; margin-bottom: 20px; padding: 8px 15px; background-color: #6c757d; color: white; text-decoration: none; border-radius: 5px; }
+        .home-link:hover { background-color: #5a6268; }
+        .control-group { margin-bottom: 20px; }
+        .control-group label { font-weight: bold; margin-right: 10px; }
+        .control-group select, .control-group button { padding: 10px; border-radius: 5px; border: 1px solid #ccc; font-size: 16px; }
+        .control-group button { background-color: #28a745; color: white; cursor: pointer; }
+        .control-group button:hover { background-color: #218838; }
+        .status { margin-top: 20px; padding: 15px; background-color: #e9ecef; border-radius: 5px; border-left: 5px solid #007bff; }
+        .status p { margin: 0; }
+        .instructions { margin-top: 15px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="/" class="home-link">返回主页</a>
+        <h1>Cookie 获取工具</h1>
+        <p class="instructions">
+            此工具将打开一个浏览器窗口。请在该窗口中进行任何必要的人机验证（如Cloudflare验证），直到您能正常看到期刊主页。成功加载页面后，关闭浏览器窗口，此页面将显示获取结果。
+        </p>
+
+        <div class="control-group">
+            <label for="journalSelect">选择期刊:</label>
+            <select id="journalSelect"></select>
+            <button id="getCookieBtn">启动浏览器获取Cookie</button>
+        </div>
+
+        <div id="status" class="status">
+            <p><strong>状态:</strong> 等待操作。</p>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const journalSelect = document.getElementById('journalSelect');
+            const getCookieBtn = document.getElementById('getCookieBtn');
+            const statusDiv = document.getElementById('status');
+
+            async function loadJournals() {
+                try {
+                    const response = await fetch('/journal_configs');
+                    const configs = await response.json();
+                    for (const code in configs) {
+                        const option = document.createElement('option');
+                        option.value = code;
+                        option.textContent = configs[code].name;
+                        journalSelect.appendChild(option);
+                    }
+                } catch (error) {
+                    updateStatus(`错误: 无法加载期刊列表。`, 'error');
+                }
+            }
+            
+            function updateStatus(message, type = 'info') {
+                statusDiv.innerHTML = `<p><strong>状态:</strong> ${message}</p>`;
+                if (type === 'success') {
+                    statusDiv.style.borderColor = '#28a745';
+                } else if (type === 'error') {
+                    statusDiv.style.borderColor = '#dc3545';
+                } else {
+                    statusDiv.style.borderColor = '#007bff';
+                }
+            }
+
+            getCookieBtn.addEventListener('click', async () => {
+                const journalCode = journalSelect.value;
+                if (!journalCode) {
+                    updateStatus('请先选择一个期刊。', 'error');
+                    return;
+                }
+
+                updateStatus('正在启动浏览器，请在新窗口中操作...');
+                getCookieBtn.disabled = true;
+
+                try {
+                    const response = await fetch('/get_cookie', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ journal_code: journalCode })
+                    });
+
+                    const result = await response.json();
+                    
+                    if (result.status === 'success') {
+                        updateStatus(`成功获取并保存了 ${result.cookie_count} 个Cookie。关键的 'cf_clearance' Cookie已${result.cf_found ? '' : '未'}找到。`, 'success');
+                    } else {
+                        updateStatus(`操作失败: ${result.message}`, 'error');
+                    }
+                } catch (error) {
+                    updateStatus(`请求错误: ${error.message}`, 'error');
+                } finally {
+                    getCookieBtn.disabled = false;
+                }
+            });
+
+            loadJournals();
+        });
+    </script>
+</body>
+</html>

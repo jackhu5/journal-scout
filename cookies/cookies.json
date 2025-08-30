@@ -1,0 +1,360 @@
+[
+  {
+    "name": "JSESSIONID",
+    "value": "65B229DD82BBD26A4EC0DE8EAB9A3D76",
+    "domain": "sso.acs.org",
+    "path": "/idpservice",
+    "expires": -1,
+    "httpOnly": true,
+    "secure": true,
+    "sameSite": "None"
+  },
+  {
+    "name": "ACSEnt",
+    "value": "766193_6105_1756544216236",
+    "domain": ".acs.org",
+    "path": "/",
+    "expires": -1,
+    "httpOnly": false,
+    "secure": true,
+    "sameSite": "Lax"
+  },
+  {
+    "name": "JSESSIONID",
+    "value": "F99163C77AFBEA99104B8622E18618F9",
+    "domain": "pubs.acs.org",
+    "path": "/",
+    "expires": -1,
+    "httpOnly": true,
+    "secure": true,
+    "sameSite": "Lax"
+  },
+  {
+    "name": "MAID",
+    "value": "Y/bSgtnBevDgvccnwwT2sQ==",
+    "domain": ".pubs.acs.org",
+    "path": "/",
+    "expires": 1782464216.258067,
+    "httpOnly": true,
+    "secure": true,
+    "sameSite": "Lax"
+  },
+  {
+    "name": "MACHINE_LAST_SEEN",
+    "value": "2025-08-30T01%3A56%3A56.242-07%3A00",
+    "domain": ".pubs.acs.org",
+    "path": "/",
+    "expires": 1782464216.258089,
+    "httpOnly": true,
+    "secure": true,
+    "sameSite": "Lax"
+  },
+  {
+    "name": "JSESSIONID",
+    "value": "F99163C77AFBEA99104B8622E18618F9",
+    "domain": ".pubs.acs.org",
+    "path": "/",
+    "expires": -1,
+    "httpOnly": true,
+    "secure": true,
+    "sameSite": "None"
+  },
+  {
+    "name": "__cf_bm",
+    "value": "6yeaeWB4qdjxZyYfpAQdlbee1cj2XktmMs3PBE_d.p8-1756544216-1.0.1.1-uLGbCMm.5oYMq3mv2GSkmsOU8g72HJPk_0ns3uxu7SEzbfrmPfcYKrDFlQzq7cJvDNmGwpWTsUyoEAHAESN6XPMDIA.NjRNEj6eYy2T3ATY",
+    "domain": ".pubs.acs.org",
+    "path": "/",
+    "expires": 1756546016.258111,
+    "httpOnly": true,
+    "secure": true,
+    "sameSite": "None"
+  },
+  {
+    "name": "_ga_XP5JV6H8Q6",
+    "value": "GS2.1.s1756544217$o1$g0$t1756544217$j60$l0$h0",
+    "domain": ".acs.org",
+    "path": "/",
+    "expires": 1791104217.436011,
+    "httpOnly": false,
+    "secure": false,
+    "sameSite": "Lax"
+  },
+  {
+    "name": "_ga",
+    "value": "GA1.1.819651322.1756544217",
+    "domain": ".acs.org",
+    "path": "/",
+    "expires": 1791104217.50254,
+    "httpOnly": false,
+    "secure": false,
+    "sameSite": "Lax"
+  },
+  {
+    "name": "_ga_Q72ZQB7GTR",
+    "value": "GS2.1.s1756544217$o1$g0$t1756544217$j60$l0$h0",
+    "domain": ".acs.org",
+    "path": "/",
+    "expires": 1791104217.502352,
+    "httpOnly": false,
+    "secure": false,
+    "sameSite": "Lax"
+  },
+  {
+    "name": "CLID",
+    "value": "3285e54906e746b0b2faaa0907eb4c5b.20250830.20260830",
+    "domain": "www.clarity.ms",
+    "path": "/",
+    "expires": 1788080217.843618,
+    "httpOnly": true,
+    "secure": true,
+    "sameSite": "None"
+  },
+  {
+    "name": "cf_clearance",
+    "value": "4KFze1d87UXWPssjCfUHsuiUeAcIG18xbTqb9RAJpTQ-1756544218-1.2.1.1-oqsKmgI014bm.450Ew90oUE3DnkYrdfCUNJRdEl5cxsu5YQAgCej4zUOalToK_a6W_m2s_KTLK2eDuWyApXENMGylSxMrntykMvau8C7PczBaME3peLfYKPP08.X.y9RH_xGgL7T9OLMEPc3QiASe8cRkqCSWkL2TDp.S3xaHg1g8X3C96z6Odj8xz2fpUKoqPDAL6GwfI53SOWonLWXcdGWOwRFBRBwNP0WqFUKwog",
+    "domain": ".pubs.acs.org",
+    "path": "/",
+    "expires": 1788080218.408005,
+    "httpOnly": true,
+    "secure": true,
+    "sameSite": "None",
+    "partitionKey": "https://acs.org",
+    "_crHasCrossSiteAncestor": false
+  },
+  {
+    "name": "_clck",
+    "value": "1ix8aw5%5E2%5Efyw%5E0%5E2068",
+    "domain": ".acs.org",
+    "path": "/",
+    "expires": 1788080218,
+    "httpOnly": false,
+    "secure": false,
+    "sameSite": "Lax"
+  },
+  {
+    "name": "tuuid",
+    "value": "ae895cec-d00e-4afa-92c1-cc515d4c9d27",
+    "domain": ".company-target.com",
+    "path": "/",
+    "expires": 1790758618.848668,
+    "httpOnly": true,
+    "secure": true,
+    "sameSite": "None"
+  },
+  {
+    "name": "tuuid_lu",
+    "value": "1756544218|ix:0|mctv:0|rp:0",
+    "domain": ".company-target.com",
+    "path": "/",
+    "expires": 1790758618.848715,
+    "httpOnly": true,
+    "secure": true,
+    "sameSite": "None"
+  },
+  {
+    "name": "rlas3",
+    "value": "xxtFwWpUJfi3ogqSRXpOCk6IZqdof8KtKz9OUcVmsrs=",
+    "domain": ".rlcdn.com",
+    "path": "/",
+    "expires": 1788080219.143895,
+    "httpOnly": false,
+    "secure": true,
+    "sameSite": "None"
+  },
+  {
+    "name": "pxrc",
+    "value": "CNv5ysUGEgUI6AcQABIGCMrdKhAA",
+    "domain": ".rlcdn.com",
+    "path": "/",
+    "expires": 1761728219.143949,
+    "httpOnly": false,
+    "secure": true,
+    "sameSite": "None"
+  },
+  {
+    "name": "CMID",
+    "value": "aLK824sFVYEAOi4EAWpqjgAA",
+    "domain": ".casalemedia.com",
+    "path": "/",
+    "expires": 1788080219.566435,
+    "httpOnly": false,
+    "secure": true,
+    "sameSite": "None"
+  },
+  {
+    "name": "CMPS",
+    "value": "4809",
+    "domain": ".casalemedia.com",
+    "path": "/",
+    "expires": 1764320219.42288,
+    "httpOnly": false,
+    "secure": true,
+    "sameSite": "None"
+  },
+  {
+    "name": "CMPRO",
+    "value": "4809",
+    "domain": ".casalemedia.com",
+    "path": "/",
+    "expires": 1764320219.566478,
+    "httpOnly": false,
+    "secure": true,
+    "sameSite": "None"
+  },
+  {
+    "name": "audit_p",
+    "value": "1|9sC6EttfXynTpuwi9duyEN0wHktl0Qv2qU+hT/nhzlOfcjg7QMxQVtPYEjb0fzPjqYwNKapNiagwHTRO1/p4iJLoYn4tEwhGrhOqZ8TPA+2Izp+g7dQQSHLKZckrXvm6v/5dcFEE7Ce5Jvj0lLOGeMVSkdVK9RHWVFGxpdJGiDeWvEnWSmTsitzpQ7vzkXQ/",
+    "domain": ".rubiconproject.com",
+    "path": "/",
+    "expires": 1788080219.439934,
+    "httpOnly": false,
+    "secure": true,
+    "sameSite": "None",
+    "partitionKey": "https://acs.org",
+    "_crHasCrossSiteAncestor": true
+  },
+  {
+    "name": "khaos",
+    "value": "MEY12Q2Q-1D-H5ZS",
+    "domain": ".rubiconproject.com",
+    "path": "/",
+    "expires": 1788080219.43998,
+    "httpOnly": false,
+    "secure": true,
+    "sameSite": "None"
+  },
+  {
+    "name": "khaos_p",
+    "value": "MEY12Q2Q-1D-H5ZS",
+    "domain": ".rubiconproject.com",
+    "path": "/",
+    "expires": 1788080219.439993,
+    "httpOnly": false,
+    "secure": true,
+    "sameSite": "None",
+    "partitionKey": "https://acs.org",
+    "_crHasCrossSiteAncestor": true
+  },
+  {
+    "name": "audit",
+    "value": "1|9sC6EttfXynTpuwi9duyEN0wHktl0Qv2qU+hT/nhzlOfcjg7QMxQVtPYEjb0fzPjqYwNKapNiagwHTRO1/p4iJLoYn4tEwhGrhOqZ8TPA+2Izp+g7dQQSHLKZckrXvm6v/5dcFEE7Ce5Jvj0lLOGeMVSkdVK9RHWVFGxpdJGiDeWvEnWSmTsitzpQ7vzkXQ/",
+    "domain": ".rubiconproject.com",
+    "path": "/",
+    "expires": 1788080219.440005,
+    "httpOnly": false,
+    "secure": true,
+    "sameSite": "None"
+  },
+  {
+    "name": "receive-cookie-deprecation",
+    "value": "1",
+    "domain": ".rubiconproject.com",
+    "path": "/",
+    "expires": 1764320219.440017,
+    "httpOnly": true,
+    "secure": true,
+    "sameSite": "None",
+    "partitionKey": "https://acs.org",
+    "_crHasCrossSiteAncestor": true
+  },
+  {
+    "name": "AWSALB",
+    "value": "sUVt2KQ9THsZ44CR2mOCLqfW8PQgeSy+4emj83GRFvf37lmJs7rxU9fF6dGNQ3IgoWuBQDpjDhZJMtldfjq3gmr3AakWXtiZJDGnxWzZMcG4C5rwII8qurH5eZmR",
+    "domain": "sso.acs.org",
+    "path": "/",
+    "expires": 1757149019.68164,
+    "httpOnly": false,
+    "secure": false,
+    "sameSite": "Lax"
+  },
+  {
+    "name": "AWSALBCORS",
+    "value": "sUVt2KQ9THsZ44CR2mOCLqfW8PQgeSy+4emj83GRFvf37lmJs7rxU9fF6dGNQ3IgoWuBQDpjDhZJMtldfjq3gmr3AakWXtiZJDGnxWzZMcG4C5rwII8qurH5eZmR",
+    "domain": "sso.acs.org",
+    "path": "/",
+    "expires": 1757149019.681672,
+    "httpOnly": false,
+    "secure": true,
+    "sameSite": "None"
+  },
+  {
+    "name": "visid_incap_2209364",
+    "value": "XHoj1GwPTEGGSz991TKoydu8smgAAAAAQUIPAAAAAADVqI8k8wtyh/oXBqTpje6Y",
+    "domain": ".acs.org",
+    "path": "/",
+    "expires": 1788020938.681696,
+    "httpOnly": true,
+    "secure": true,
+    "sameSite": "None"
+  },
+  {
+    "name": "nlbi_2209364",
+    "value": "f06OSnBkkQzx1Eb7/VWePAAAAAACsM1ociPb8e3laG0sRiIb",
+    "domain": ".acs.org",
+    "path": "/",
+    "expires": -1,
+    "httpOnly": true,
+    "secure": true,
+    "sameSite": "None"
+  },
+  {
+    "name": "incap_ses_1802_2209364",
+    "value": "lrfWVR/dyjZ4/t063/0BGdu8smgAAAAAYf22WNQomU5Rfr5JvC4QhQ==",
+    "domain": ".acs.org",
+    "path": "/",
+    "expires": -1,
+    "httpOnly": false,
+    "secure": true,
+    "sameSite": "None"
+  },
+  {
+    "name": "_clsk",
+    "value": "o68yu7%5E1756544219714%5E1%5E0%5Eh.clarity.ms%2Fcollect",
+    "domain": ".acs.org",
+    "path": "/",
+    "expires": 1756630619,
+    "httpOnly": false,
+    "secure": false,
+    "sameSite": "Lax"
+  },
+  {
+    "name": "IDE",
+    "value": "AHWqTUlxJT2OnacAZZIsRdXKLgPuJEiukE4RIaah6afpYiWtq_YhlBKLfaUVMHOec-s",
+    "domain": ".doubleclick.net",
+    "path": "/",
+    "expires": 1791104219.904678,
+    "httpOnly": true,
+    "secure": true,
+    "sameSite": "None"
+  },
+  {
+    "name": "__eoi",
+    "value": "ID=9ffdde17890ac41a:T=1756544219:RT=1756544219:S=AA-AfjaCPOj9pK2imEW5_4XrnzNV",
+    "domain": ".acs.org",
+    "path": "/",
+    "expires": 1772096219,
+    "httpOnly": false,
+    "secure": true,
+    "sameSite": "None"
+  },
+  {
+    "name": "tvid",
+    "value": "e06522068c3049dc91c0505f028235f7",
+    "domain": ".tremorhub.com",
+    "path": "/",
+    "expires": 1788101120.334663,
+    "httpOnly": false,
+    "secure": true,
+    "sameSite": "None"
+  },
+  {
+    "name": "tv_UIDM",
+    "value": "ae895cec-d00e-4afa-92c1-cc515d4c9d27",
+    "domain": ".tremorhub.com",
+    "path": "/",
+    "expires": 1791104220.334729,
+    "httpOnly": false,
+    "secure": true,
+    "sameSite": "None"
+  }
+]

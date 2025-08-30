@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>期刊信息爬取与展示</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f4f4f4;
+            color: #333;
+        }
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            text-align: center;
+            color: #0056b3;
+        }
+        .input-section {
+            display: flex;
+            margin-bottom: 20px;
+        }
+        .input-section input[type="text"] {
+            flex-grow: 1;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+        .input-section button {
+            padding: 10px 15px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-left: 10px;
+        }
+        .input-section button:hover {
+            background-color: #0056b3;
+        }
+        .status-message {
+            margin-bottom: 20px;
+            padding: 10px;
+            border-radius: 4px;
+            background-color: #e9ecef;
+            color: #495057;
+            text-align: center;
+        }
+        .journal-stats {
+            margin-top: 20px;
+        }
+        .journal-stats h2 {
+            color: #007bff;
+            text-align: center;
+        }
+        .journal-stats ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        .journal-stats li {
+            background-color: #f8f9fa;
+            border: 1px solid #e2e6ea;
+            border-radius: 6px;
+            padding: 15px;
+            margin-bottom: 10px;
+            text-align: center;
+        }
+        .clear-db-button {
+            display: block;
+            width: 150px;
+            margin: 20px auto; /* 居中 */
+            padding: 10px 15px;
+            background-color: #dc3545; /* 红色背景 */
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            text-align: center;
+        }
+        .clear-db-button:hover {
+            background-color: #c82333;
+        }
+        .search-page-link {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: #28a745;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            font-size: 18px;
+            margin-top: 10px;
+        }
+        .search-page-link:hover {
+            background-color: #218838;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 style="text-align: center;">期刊信息爬取工具</h1>
+
+        <div style="text-align: center; margin-bottom: 20px;">
+            <a href="/search_page" class="search-page-link">进入数据库检索页面</a>
+            <a href="/batch_crawl_page" class="search-page-link" style="background-color: #17a2b8; margin-left: 10px;">进入批量爬取页面</a>
+        </div>
+
+        <div class="input-section">
+            <select id="journalSelect">
+                <option value="jmcmar">Journal of Medicinal Chemistry</option>
+                <option value="jacsat">Journal of the American Chemical Society</option>
+                <!-- 可以添加其他期刊选项 -->
+            </select>
+            <input type="text" id="urlInput" placeholder="请输入期刊网页URL，例如: https://pubs.acs.org/toc/jmcmar/0/0">
+            <button id="crawlButton">开始爬取</button>
+        </div>
+
+        <div id="statusMessage" class="status-message">等待输入URL...</div>
+
+        <div class="journal-stats" id="journalStats">
+            <h2>期刊数据统计</h2>
+            <ul id="journalStatsList">
+                <!-- 期刊数据统计将在这里动态加载 -->
+            </ul>
+        </div>
+
+        <button id="clearDbButton" class="clear-db-button">清空数据库</button>
+    </div>
+
+    <script>
+        const urlInput = document.getElementById('urlInput');
+        const crawlButton = document.getElementById('crawlButton');
+        const statusMessage = document.getElementById('statusMessage');
+        const journalStatsList = document.getElementById('journalStatsList');
+        const clearDbButton = document.getElementById('clearDbButton');
+
+        async function fetchJournalStats() {
+            try {
+                const response = await fetch('/journal_stats');
+                const data = await response.json();
+                journalStatsList.innerHTML = ''; // Clear previous list
+
+                if (data.length === 0) {
+                    journalStatsList.innerHTML = '<p style="text-align: center;">数据库中暂无期刊信息。</p>';
+                    return;
+                }
+
+                data.forEach(stat => {
+                    const item = document.createElement('li');
+                    item.innerHTML = `<strong>${stat.journal_name}</strong>: ${stat.count} 篇文章`;
+                    journalStatsList.appendChild(item);
+                });
+            } catch (error) {
+                console.error('Error fetching journal stats:', error);
+                statusMessage.textContent = '加载期刊统计信息失败。';
+                statusMessage.style.backgroundColor = '#f8d7da';
+                statusMessage.style.color = '#721c24';
+            }
+        }
+
+        crawlButton.addEventListener('click', async () => {
+            const url = urlInput.value.trim();
+            if (!url) {
+                statusMessage.textContent = '请输入一个有效的URL！';
+                statusMessage.style.backgroundColor = '#fff3cd';
+                statusMessage.style.color = '#856404';
+                return;
+            }
+
+            statusMessage.textContent = '正在开始爬取，请稍候...';
+            statusMessage.style.backgroundColor = '#d1ecf1';
+            statusMessage.style.color = '#0c5460';
+            crawlButton.disabled = true;
+
+            try {
+                const response = await fetch('/crawl', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ url: url, journal_code: document.getElementById('journalSelect').value })
+                });
+                const result = await response.json();
+
+                if (result.status === 'success') {
+                    statusMessage.textContent = result.message;
+                    statusMessage.style.backgroundColor = '#d4edda';
+                    statusMessage.style.color = '#155724';
+                    fetchJournalStats(); // Refresh the list after successful crawl
+                } else {
+                    statusMessage.textContent = `爬取失败: ${result.message}`;
+                    statusMessage.style.backgroundColor = '#f8d7da';
+                    statusMessage.style.color = '#721c24';
+                }
+            } catch (error) {
+                console.error('Error during crawl:', error);
+                statusMessage.textContent = `请求爬取时发生错误: ${error.message}`;
+                statusMessage.style.backgroundColor = '#f8d7da';
+                statusMessage.style.color = '#721c24';
+            } finally {
+                crawlButton.disabled = false;
+            }
+        });
+
+        clearDbButton.addEventListener('click', async () => {
+            if (!confirm('确定要清空所有期刊数据吗？此操作不可逆！')) {
+                return;
+            }
+
+            statusMessage.textContent = '正在清空数据库...';
+            statusMessage.style.backgroundColor = '#d1ecf1';
+            statusMessage.style.color = '#0c5460';
+            clearDbButton.disabled = true;
+
+            try {
+                const response = await fetch('/clear_db', {
+                    method: 'POST'
+                });
+                const result = await response.json();
+
+                if (result.status === 'success') {
+                    statusMessage.textContent = result.message;
+                    statusMessage.style.backgroundColor = '#d4edda';
+                    statusMessage.style.color = '#155724';
+                    fetchJournalStats(); // Refresh the list after clearing
+                } else {
+                    statusMessage.textContent = `清空数据库失败: ${result.message}`;
+                    statusMessage.style.backgroundColor = '#f8d7da';
+                    statusMessage.style.color = '#721c24';
+                }
+            } catch (error) {
+                console.error('Error clearing database:', error);
+                statusMessage.textContent = `请求清空数据库时发生错误: ${error.message}`;
+                statusMessage.style.backgroundColor = '#f8d7da';
+                statusMessage.style.color = '#721c24';
+            } finally {
+                clearDbButton.disabled = false;
+            }
+        });
+
+        // Initial fetch of journal stats when the page loads
+        document.addEventListener('DOMContentLoaded', fetchJournalStats);
+    </script>
+</body>
+</html>
